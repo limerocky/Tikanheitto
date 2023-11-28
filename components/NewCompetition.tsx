@@ -1,7 +1,7 @@
-import React, { useContext, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Competitor, TaskContext } from '../context/TaskContext';
-import { Button, Dialog, Portal, TextInput } from 'react-native-paper';
+import { Button, Dialog, FAB, Portal, TextInput } from 'react-native-paper';
 import StartCompetition from './StartCompetition';
 
 interface DialogData {
@@ -11,9 +11,10 @@ interface DialogData {
 
 const NewCompetition : React.FC = () : React.ReactElement => {
 
-    const { competitors, setCompetitors } = useContext(TaskContext);
+    const { competitors, setCompetitors, 
+            roundsView, setRoundsView,
+            setNewCompetitionView } = useContext(TaskContext);
 
-    const [start, setStart] = useState<boolean>(false);
     const [dialog, setDialog] = useState<DialogData>({
         open: false,
         name: "",
@@ -33,61 +34,83 @@ const NewCompetition : React.FC = () : React.ReactElement => {
 
     }
 
+    useEffect(() => {
+
+      setCompetitors([]);
+      
+    }, [])
+
   return (
-    <View style={styles.container}>
+    <>
+      {(roundsView)
 
-      {(start)
+        ?  <StartCompetition />
 
-      ?   <StartCompetition />
+        : <>
+            <View style={styles.container}>
+              <Text
+                style={{ fontSize: 26, marginTop: 60 }}
+              >Kilpailijat:</Text>
 
-      :   <>
-            <Text
-              style={{ fontSize: 26 }}
-            >Kilpailijat:</Text>
-
-            {competitors.map((competitor : Competitor, idx : number) => {
-              return (
-                <Text 
-                  key={idx}
-                  style={{ marginTop: 10, fontSize: 20 }}
-                >{competitor.name}</Text>
-              );
-            })}
-
-            <Button
-              style={{ marginTop: 20 }}
-              mode="contained"
-              onPress={() => setDialog({ ...dialog, open: true })}
-            >Lisää kilpailija</Button>
-
-            <Button
-              style={{ marginTop: 20 }}
-              mode="contained"
-              disabled={competitors.length < 2}
-              onPress={() => setStart(true)}
-            > Aloita kilpailu </Button>
-
-            <Portal>
-              <Dialog
-                visible={dialog.open}
-                onDismiss={() => setDialog({ open: false, name: ""})}
+              <ScrollView
+                contentContainerStyle={{ alignItems: 'center' }}
               >
-                <Dialog.Title>Uusi kilpailija</Dialog.Title>
-                <Dialog.Content>
-                  <TextInput 
-                      label="Nimi"
-                      value={dialog.name}
-                      onChangeText={(text : string) => setDialog({ ...dialog, name: text })}
-                  />
-                </Dialog.Content>
-                <Dialog.Actions>
-                  <Button onPress={addCompetitor}> Lisää</Button>
-                </Dialog.Actions>
-              </Dialog>
-            </Portal>
+                {competitors.map((competitor : Competitor, idx : number) => {
+                  return (
+                    <Text 
+                      key={idx}
+                      style={{ marginTop: 10, fontSize: 20 }}
+                    >{competitor.name}</Text>
+                  );
+                })}
+              </ScrollView>
+
+              <View
+                style={{ marginBottom: 50 }}
+              >
+                <Button
+                  style={{ marginTop: 20 }}
+                  mode="contained"
+                  onPress={() => setDialog({ ...dialog, open: true })}
+                >Lisää kilpailija</Button>
+
+                <Button
+                  style={{ marginTop: 20 }}
+                  mode="contained"
+                  disabled={competitors.length < 2}
+                  onPress={() => setRoundsView(true)}
+                > Aloita kilpailu </Button>
+
+              </View>
+
+              <Portal>
+                <Dialog
+                  visible={dialog.open}
+                  onDismiss={() => setDialog({ open: false, name: ""})}
+                >
+                  <Dialog.Title>Uusi kilpailija</Dialog.Title>
+                  <Dialog.Content>
+                    <TextInput 
+                        label="Nimi"
+                        value={dialog.name}
+                        onChangeText={(text : string) => setDialog({ ...dialog, name: text })}
+                    />
+                  </Dialog.Content>
+                  <Dialog.Actions>
+                    <Button onPress={addCompetitor}> Lisää</Button>
+                  </Dialog.Actions>
+                </Dialog>
+              </Portal>
+            </View>
+
+            <FAB
+              style={{ position: 'absolute', top : 0, left : 0, margin : 10,  marginTop : 35}}
+              icon="close"
+              onPress={() => setNewCompetitionView(false)}
+            />
           </>
       }
-    </View>
+    </>
   );
 }
 
@@ -96,7 +119,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
   },
 });
 

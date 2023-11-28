@@ -56,6 +56,9 @@ export const TaskProvider : React.FC<Props> = (props : Props) : React.ReactEleme
     const [competitions, setCompetitions] = useState<Competition[]>([]);
     const [competitors, setCompetitors] = useState<Competitor[]>([]);
     const [rounds, setRounds] = useState<number>(1);
+    const [resultView, setResultView] = useState<boolean>(false);
+    const [newCompetitionView, setNewCompetitionView] = useState<boolean>(false);
+    const [roundsView, setRoundsView] = useState<boolean>(false);
 
     const getCompetitions = () : void => {
 
@@ -118,6 +121,12 @@ export const TaskProvider : React.FC<Props> = (props : Props) : React.ReactEleme
                 setRounds,
                 competitors,
                 setCompetitors,
+                resultView,
+                setResultView,
+                newCompetitionView,
+                setNewCompetitionView,
+                roundsView,
+                setRoundsView,
                 addCompetition,
                 getCompetitors
             }

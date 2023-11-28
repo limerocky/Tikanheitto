@@ -6,9 +6,8 @@ import Results from './Results';
 
 const Round : React.FC = () : React.ReactElement => {
 
-  const { rounds, competitors, setCompetitors, addCompetition } = useContext(TaskContext);
+  const { rounds, competitors, setCompetitors, addCompetition, resultView, setResultView } = useContext(TaskContext);
 
-  const [endstate, setEndstate] = useState<boolean>(false);
   const [round, setRound] = useState<number>(1);
   const [roundPoints, setRoundPoints] = useState<Competitor[]>(competitors);
 
@@ -33,7 +32,7 @@ const Round : React.FC = () : React.ReactElement => {
 
   const handleNextRound = () : void => {
 
-    if (round <= rounds) {
+    if (round < rounds) {
       
       setRound(round + 1);
 
@@ -56,49 +55,60 @@ const Round : React.FC = () : React.ReactElement => {
 
       addCompetition();
 
-      setEndstate(true);
+      setResultView(true);
 
     }
   }
 
   return (
-    <ScrollView>
+    <View>
 
-      {(endstate)
+      {(resultView)
 
         ? <Results />
 
         : <>
-            <Text>{`Kierros ${round}/${rounds}`}</Text>
+            <View
+              style={{ alignItems: 'center', flex : 1 }}
+            >
+              <Text
+                style={{ marginTop: 40, fontSize: 25 }}
+              >{`Kierros ${round}/${rounds}`}</Text>
 
-            {competitors.map((competitor : Competitor, idx : number) => {
-              return (
-                <View
-                  key={idx}
-                >
-                  <Text 
-                    style={{ marginTop: 10, fontSize: 20 }}
-                  >{competitor.name}</Text>
+              <ScrollView
+                contentContainerStyle={{ alignItems: 'center' }}
+              >
+                {competitors.map((competitor : Competitor, idx : number) => {
+                  return (
+                    <View
+                      style={{ flexDirection: 'row', marginTop: 20 }}
+                      key={idx}
+                    >
+                      <Text 
+                        style={{ fontSize: 20, maxWidth: '70%', marginRight: 15 }}
+                      >{competitor.name}</Text>
 
-                  <TextInput 
-                    label="Pisteet"
-                    keyboardType="numeric"
-                    value={roundPoints[idx].points.toString()}
-                    onChangeText={(text : string) => handlePointsChange(idx, text)}
-                  />
-                </View>
-              );
-            })}
+                      <TextInput 
+                        label="Pisteet"
+                        keyboardType="numeric"
+                        value={roundPoints[idx].points.toString()}
+                        onChangeText={(text : string) => handlePointsChange(idx, text)}
+                      />
+                    </View>
+                  );
+                })}
+              </ScrollView>
 
-            <Button
-              style={{ marginTop: 20 }}
-              mode="contained"
-              onPress={() => handleNextRound()}
-            >{(round < rounds) ? `Siirry kierrokseen ${round + 1}/${rounds}` : "Näytä lopputulokset"}</Button>
+              <Button
+                style={{ margin: 20 }}
+                mode="contained"
+                onPress={() => handleNextRound()}
+              >{(round < rounds) ? `Siirry kierrokseen ${round + 1}/${rounds}` : "Näytä lopputulokset"}</Button>
+            </View>
           </>
       }
 
-    </ScrollView>
+    </View>
   );
 }
 

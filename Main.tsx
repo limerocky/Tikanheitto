@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { TaskContext, Competition } from './context/TaskContext';
 import { Button, List } from 'react-native-paper';
@@ -8,10 +8,10 @@ import Results from './components/Results';
 
 const Main : React.FC = () : React.ReactElement => {
 
-  const [newCompetition, setNewCompetition] = useState<boolean>(false);
-  const [resultView, setResultView] = useState<boolean>(false);
-
-  const { competitions, getCompetitors } = useContext(TaskContext);
+  const { competitions, getCompetitors, 
+          resultView, setResultView, 
+          newCompetitionView, setNewCompetitionView 
+        } = useContext(TaskContext);
 
   const currentCompetitors = (id : number) => {
 
@@ -24,7 +24,7 @@ const Main : React.FC = () : React.ReactElement => {
   return (
     <View style={styles.container}>
       
-      {(newCompetition)
+      {(newCompetitionView)
 
         ? <NewCompetition />
 
@@ -33,7 +33,7 @@ const Main : React.FC = () : React.ReactElement => {
 
               ? <Results />
 
-              : <>
+              : <View>
                   {(competitions.length > 0)
                     ? competitions.map((competition : Competition) => {
                         return (
@@ -51,9 +51,9 @@ const Main : React.FC = () : React.ReactElement => {
                   <Button
                     style={{ marginTop: 20 }}
                     mode="contained"
-                    onPress={() => setNewCompetition(true)}
+                    onPress={() => setNewCompetitionView(true)}
                   >Uusi kilpailu</Button>
-                </>
+                </View>
             }
           </>
       }
