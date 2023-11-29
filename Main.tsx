@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { useContext } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { TaskContext, Competition } from './context/TaskContext';
 import { Button, List } from 'react-native-paper';
 import NewCompetition from './components/NewCompetition';
@@ -33,23 +33,28 @@ const Main : React.FC = () : React.ReactElement => {
 
               ? <Results />
 
-              : <View>
-                  {(competitions.length > 0)
-                    ? competitions.map((competition : Competition) => {
-                        return (
-                          <List.Item
-                            title={competition.name}
-                            description={competition.timestamp}
-                            onPress={() => currentCompetitors(competition.id)}
-                            key={competition.id}
-                          />
-                        )
-                      })
-                    : <Text>No competitions</Text>
-                  }
+              : <View
+                  style={{ marginTop: 30, marginBottom: 5 }}
+                >
+                  
+                  <ScrollView>
+                    {(competitions.length > 0)
+                      ? competitions.map((competition : Competition) => {
+                          return (
+                            <List.Item
+                              title={competition.name}
+                              description={competition.timestamp}
+                              onPress={() => currentCompetitors(competition.id)}
+                              key={competition.id}
+                            />
+                          )
+                        })
+                      : <Text>No competitions</Text>
+                    }
+                  </ScrollView>
 
                   <Button
-                    style={{ marginTop: 20 }}
+                    style={{ marginTop: 5 }}
                     mode="contained"
                     onPress={() => setNewCompetitionView(true)}
                   >Uusi kilpailu</Button>

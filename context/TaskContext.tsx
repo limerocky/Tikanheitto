@@ -20,13 +20,6 @@ export interface Competitor {
 
 const db : SQLite.Database = SQLite.openDatabase("competitions.db");
 
-/*db.transaction(
-    (tx : SQLite.SQLTransaction) => {
-        tx.executeSql(`DROP TABLE competitions`)
-    }, 
-    (err : SQLite.SQLError) => console.log(err)
-);*/
-
 db.transaction(
     (tx : SQLite.SQLTransaction) => {
         tx.executeSql(`CREATE TABLE IF NOT EXISTS competitions (
@@ -64,7 +57,7 @@ export const TaskProvider : React.FC<Props> = (props : Props) : React.ReactEleme
 
         db.transaction(
             (tx : SQLite.SQLTransaction) => {
-                tx.executeSql(`SELECT * FROM competitions`, [],
+                tx.executeSql(`SELECT * FROM competitions ORDER BY timestamp DESC`, [],
                     (_tx : SQLite.SQLTransaction, rs : SQLite.SQLResultSet) => {
                         setCompetitions(rs.rows._array);
                     }
@@ -100,6 +93,7 @@ export const TaskProvider : React.FC<Props> = (props : Props) : React.ReactEleme
                                             VALUES (?, ?, ?)`, [competitor.name, competitor.points, rs.insertId!]
                             );
                         });
+                        getCompetitions();
                     }
                 );
             }, 

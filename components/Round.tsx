@@ -1,12 +1,14 @@
-import React, { useContext, useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { ScrollView, View, StyleSheet } from 'react-native';
 import { Button, Text, TextInput } from 'react-native-paper';
 import { Competitor, TaskContext } from '../context/TaskContext';
-import Results from './Results';
 
 const Round : React.FC = () : React.ReactElement => {
 
-  const { rounds, competitors, setCompetitors, addCompetition, resultView, setResultView } = useContext(TaskContext);
+  const { competitors, setCompetitors, 
+          resultView, setResultView, 
+          setNewCompetitionView, setRoundsView,
+          addCompetition, rounds } = useContext(TaskContext);
 
   const [round, setRound] = useState<number>(1);
   const [roundPoints, setRoundPoints] = useState<Competitor[]>(competitors);
@@ -36,6 +38,19 @@ const Round : React.FC = () : React.ReactElement => {
       
       setRound(round + 1);
 
+      setCompetitors((prevCompetitors : Competitor[]) => {
+        return prevCompetitors.map((competitor : Competitor, idx : number) => {
+          return {
+            ...competitor,
+            points: competitor.points + roundPoints[idx].points,
+          }
+        });
+      });
+
+      setRoundPoints(roundPoints.map((competitor: Competitor) => ({ ...competitor, points: 0 })));
+
+    } else {
+
       const newCompetitors : Competitor[] = competitors.map((competitor : Competitor, idx : number) => {
         return {
           ...competitor,
@@ -43,73 +58,73 @@ const Round : React.FC = () : React.ReactElement => {
         }
       });
 
-      setCompetitors(newCompetitors);
-
-      setRoundPoints(roundPoints.map((competitor: Competitor) => ({ ...competitor, points: 0 })));
-
-    } else {
-
-      const sortedCompetitors : Competitor[] = competitors.sort((a : Competitor, b : Competitor) => b.points - a.points);
+      const sortedCompetitors : Competitor[] = newCompetitors.sort((a : Competitor, b : Competitor) => b.points - a.points);
 
       setCompetitors(sortedCompetitors);
 
-      addCompetition();
-
       setResultView(true);
-
     }
   }
 
+  useEffect(() => {
+
+    if (round === rounds) {
+      addCompetition();
+
+      setNewCompetitionView(false);
+      setRoundsView(false);
+    }
+
+  }, [resultView])
+
   return (
-    <View>
+    <View style={styles.container}>
+      
+      <Text
+        style={{ marginTop: 40, fontSize: 25 }}
+      >{`Kierros ${round}/${rounds}`}</Text>
 
-      {(resultView)
-
-        ? <Results />
-
-        : <>
+      <ScrollView
+        contentContainerStyle={{ alignItems: 'center' }}
+      >
+        {competitors.map((competitor : Competitor, idx : number) => {
+          return (
             <View
-              style={{ alignItems: 'center', flex : 1 }}
+              style={{ flexDirection: 'row', marginTop: 20 }}
+              key={idx}
             >
-              <Text
-                style={{ marginTop: 40, fontSize: 25 }}
-              >{`Kierros ${round}/${rounds}`}</Text>
+              <Text 
+                style={{ fontSize: 20, width : 180 }}
+              >{competitor.name}</Text>
 
-              <ScrollView
-                contentContainerStyle={{ alignItems: 'center' }}
-              >
-                {competitors.map((competitor : Competitor, idx : number) => {
-                  return (
-                    <View
-                      style={{ flexDirection: 'row', marginTop: 20 }}
-                      key={idx}
-                    >
-                      <Text 
-                        style={{ fontSize: 20, maxWidth: '70%', marginRight: 15 }}
-                      >{competitor.name}</Text>
-
-                      <TextInput 
-                        label="Pisteet"
-                        keyboardType="numeric"
-                        value={roundPoints[idx].points.toString()}
-                        onChangeText={(text : string) => handlePointsChange(idx, text)}
-                      />
-                    </View>
-                  );
-                })}
-              </ScrollView>
-
-              <Button
-                style={{ margin: 20 }}
-                mode="contained"
-                onPress={() => handleNextRound()}
-              >{(round < rounds) ? `Siirry kierrokseen ${round + 1}/${rounds}` : "Näytä lopputulokset"}</Button>
+              <TextInput 
+                label="Pisteet"
+                keyboardType="numeric"
+                value={roundPoints[idx].points.toString()}
+                onChangeText={(text : string) => handlePointsChange(idx, text)}
+              />
             </View>
-          </>
-      }
+          );
+        })}
+      </ScrollView>
+
+      <Button
+        style={{ margin: 20 }}
+        mode="contained"
+        onPress={() => handleNextRound()}
+      >{(round < rounds) ? `Siirry kierrokseen ${round + 1}/${rounds}` : "Näytä lopputulokset"}</Button>
 
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
 
 export default Round;

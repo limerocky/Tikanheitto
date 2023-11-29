@@ -4,17 +4,19 @@ import { Button, RadioButton, Text } from 'react-native-paper';
 import Round from './Round';
 import { TaskContext } from '../context/TaskContext';
 
-const StartCompetition : React.FC = () : React.ReactElement => {
+const SelectRounds : React.FC = () : React.ReactElement => {
 
   const { rounds, setRounds } = useContext(TaskContext);
 
   const [start, setStart] = useState<boolean>(false);
 
   return (
-    <View>
+    <>
       {(start)
         ? <Round />
-        : <>
+        : <View
+            style={styles.container}
+          >
             <Text
               style={{ fontSize: 26, marginBottom: 20 }}
             >Kierroksia? (1-10)</Text>
@@ -67,13 +69,20 @@ const StartCompetition : React.FC = () : React.ReactElement => {
               mode="contained"
               onPress={() => setStart(true)}
             >Aloita kierros 1</Button>
-          </>
+            
+          </View>
       }
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent : 'center',
+  },
   rowContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -81,4 +90,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default StartCompetition;
+export default SelectRounds;

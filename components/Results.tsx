@@ -5,7 +5,7 @@ import { ScrollView, View } from 'react-native';
 
 const Results : React.FC = () : React.ReactElement => {
 
-  const { competitors, setCompetitors, setResultView, setRoundsView, setNewCompetitionView } = useContext(TaskContext);
+  const { competitors, setCompetitors, setResultView, setRounds } = useContext(TaskContext);
 
   const winners : Competitor[] = competitors.filter(
     (competitor : Competitor) => competitor.points === competitors[0].points
@@ -15,67 +15,64 @@ const Results : React.FC = () : React.ReactElement => {
 
     setCompetitors([]);
 
+    setRounds(1);
     setResultView(false);
-    setRoundsView(false);
-    setNewCompetitionView(false);
-
   }
 
   return(
     <>
       {(competitors.length > 0)
-        ? <>
-            <View>
-              <ScrollView 
-                style={{ marginTop : 50  }}
-                contentContainerStyle={{ alignItems : 'center' }}
-              >
+        ? <View>
+            <ScrollView 
+              style={{ marginTop : 50  }}
+              contentContainerStyle={{ alignItems : 'center' }}
+            >
 
-                <Text
-                  style={{ fontSize: 35 }}
-                >Kilpailun voitti</Text>
+              <Text
+                style={{ fontSize: 35 }}
+              >Kilpailun voitti</Text>
 
-                {winners.map((winner : Competitor, idx : number) => {
-                  return (
+              {winners.map((winner : Competitor, idx : number) => {
+                return (
+                  <Text 
+                    style={{ marginTop: 10, fontSize: 26, flex : 1 }}
+                    key={idx}
+                  >{winner.name}</Text>
+                );
+              })}
+
+              <Text
+                style={{ fontSize : 30, marginTop : 50 }}
+              >Pisteet</Text>
+
+              {competitors.map((competitor : Competitor, idx : number) => {
+                return (
+                  <View
+                    style={{ flexDirection : 'row', marginTop : 10 }}
+                    key={idx}
+                  >
                     <Text 
-                      style={{ marginTop: 10, fontSize: 26, flex : 1 }}
-                      key={idx}
-                    >{winner.name}</Text>
-                  );
-                })}
+                      style={{ fontSize: 20, width: 180, marginRight : 5 }}
+                    >{competitor.name} </Text>
 
-                <Text
-                  style={{ fontSize : 30, marginTop : 50 }}
-                >Pisteet</Text>
+                    <Text 
+                      style={{ fontSize: 20 }}
+                    > {competitor.points}</Text>
+                  </View>
+                );
+              })}
 
-                {competitors.map((competitor : Competitor, idx : number) => {
-                  return (
-                    <View
-                      style={{ flexDirection : 'row' }}
-                      key={idx}
-                    >
-                      <Text 
-                        style={{ marginTop: 10, fontSize: 20, flex : 1 }}
-                      >{competitor.name} </Text>
+            </ScrollView>
+          </View>
 
-                      <Text 
-                        style={{ marginTop: 10, fontSize: 20 }}
-                      > {competitor.points}</Text>
-                    </View>
-                  );
-                })}
-
-              </ScrollView>
-            </View>
-
-            <FAB
-              style={{ position: 'absolute', top : 0, left : 0, margin : 10,  marginTop : 35}}
-              icon="close"
-              onPress={handleClose}
-            />
-          </>
         : <ActivityIndicator animating={competitors.length === 0} color={MD2Colors.red800} size={'large'}/>
       }
+
+      <FAB
+        style={{ position: 'absolute', top : 0, left : 0, margin : 10,  marginTop : 35}}
+        icon="close"
+        onPress={handleClose}
+      />
     </>
   );
 }
