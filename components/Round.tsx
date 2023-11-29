@@ -17,6 +17,8 @@ const Round : React.FC = () : React.ReactElement => {
 
     const points : number = Number(text.replace(/[^0-9]/g, ''));
 
+    if (points > 50) return;
+
     const newPoints : Competitor[] = roundPoints.map((competitor : Competitor, idx : number) => {
 
       if (idx === id) {
@@ -94,12 +96,13 @@ const Round : React.FC = () : React.ReactElement => {
               key={idx}
             >
               <Text 
-                style={{ fontSize: 20, width : 180 }}
+                style={{ fontSize: 20, width : 150 }}
               >{competitor.name}</Text>
 
               <TextInput 
-                label="Pisteet"
+                label="(0-50)"
                 keyboardType="numeric"
+                error={roundPoints[idx].points > 50}
                 value={roundPoints[idx].points.toString()}
                 onChangeText={(text : string) => handlePointsChange(idx, text)}
               />
