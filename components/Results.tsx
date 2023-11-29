@@ -52,12 +52,12 @@ const Results : React.FC = () : React.ReactElement => {
                     key={idx}
                   >
                     <Text 
-                      style={{ fontSize: 20, width: 180, marginRight : 5 }}
-                    >{competitor.name} </Text>
+                      style={{ fontSize: 20, flex : 1 }}
+                    > {competitor.name} </Text>
 
                     <Text 
                       style={{ fontSize: 20 }}
-                    > {competitor.points}</Text>
+                    > {competitor.points} </Text>
                   </View>
                 );
               })}

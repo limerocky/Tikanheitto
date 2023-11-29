@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Button, Dialog, Portal, TextInput } from 'react-native-paper';
 import { Competitor, TaskContext } from '../context/TaskContext';
 import SelectRounds from './SelectRounds';
+import Darts501Round from './Darts501Round';
 
 interface DialogData {
   open : boolean;
@@ -12,7 +13,8 @@ interface DialogData {
 const NewCompetition : React.FC = () : React.ReactElement => {
 
   const { competitors, setCompetitors, 
-          roundsView, setRoundsView } = useContext(TaskContext);
+          roundsView, setRoundsView,
+          competitionType } = useContext(TaskContext);
 
   const [dialog, setDialog] = useState<DialogData>({
     open: false,
@@ -25,7 +27,7 @@ const NewCompetition : React.FC = () : React.ReactElement => {
       ...competitors,
       {
         name: (dialog.name) ? dialog.name : "placeholder",
-        points: 0,
+        points: (competitionType === "Mökkitikka") ? 0 : 501,
       }
     ]);
 
@@ -37,7 +39,15 @@ const NewCompetition : React.FC = () : React.ReactElement => {
     <>
       {(roundsView)
 
-        ?  <SelectRounds />
+        ? <>
+            {(competitionType === "Mökkitikka")
+
+              ? <SelectRounds />
+
+              : <Darts501Round />
+
+            }
+          </>
 
         : <View 
             style={styles.container}

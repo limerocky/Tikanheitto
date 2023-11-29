@@ -46,6 +46,7 @@ db.transaction(
 
 export const TaskProvider : React.FC<Props> = (props : Props) : React.ReactElement => {
 
+    const [competitionType, setCompetitionType] = useState<string>("Mökkitikka");
     const [competitions, setCompetitions] = useState<Competition[]>([]);
     const [competitors, setCompetitors] = useState<Competitor[]>([]);
     const [rounds, setRounds] = useState<number>(1);
@@ -86,7 +87,7 @@ export const TaskProvider : React.FC<Props> = (props : Props) : React.ReactEleme
 
         db.transaction(
             (tx : SQLite.SQLTransaction) => {
-                tx.executeSql(`INSERT INTO COMPETITIONS (name) VALUES (?)`, [name],
+                tx.executeSql(`INSERT INTO COMPETITIONS (name) VALUES (?)`, [competitionType],
                     (_tx : SQLite.SQLTransaction, rs : SQLite.SQLResultSet) => {
                         competitors.forEach((competitor : Competitor) => {
                             tx.executeSql(`INSERT INTO competitors (name, points, competition_id)
@@ -111,6 +112,8 @@ export const TaskProvider : React.FC<Props> = (props : Props) : React.ReactEleme
         <TaskContext.Provider value={
             {
                 competitions,
+                competitionType,
+                setCompetitionType,
                 rounds,
                 setRounds,
                 competitors,

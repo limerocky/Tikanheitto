@@ -1,8 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { TaskContext, Competition } from './context/TaskContext';
-import { Button, List } from 'react-native-paper';
+import { Button, Dialog, List, Portal } from 'react-native-paper';
 import NewCompetition from './components/NewCompetition';
 import Results from './components/Results';
 
@@ -10,8 +10,11 @@ const Main : React.FC = () : React.ReactElement => {
 
   const { competitions, getCompetitors, 
           resultView, setResultView, 
-          newCompetitionView, setNewCompetitionView 
+          newCompetitionView, setNewCompetitionView, 
+          setCompetitionType
         } = useContext(TaskContext);
+
+  const [dialog, setDialog] = useState<boolean>(false);
 
   const currentCompetitors = (id : number) => {
 
@@ -60,8 +63,39 @@ const Main : React.FC = () : React.ReactElement => {
                   <Button
                     style={{ marginTop: 5 }}
                     mode="contained"
-                    onPress={() => setNewCompetitionView(true)}
+                    onPress={() => setDialog(true)}
                   >Uusi kilpailu</Button>
+
+                  <Portal>
+                    <Dialog
+                      style={{ alignItems: "center" }}
+                      visible={dialog}
+                      onDismiss={() => setDialog(false)}
+                    >
+                      <Dialog.Title>Kilpailun muoto</Dialog.Title>
+
+                      <Dialog.Content>
+                        <Button
+                          style={{ marginBottom: 5 }}
+                          mode="contained"
+                          onPress={() => {
+                            setCompetitionType("Mökkitikka");
+                            setDialog(false);
+                            setNewCompetitionView(true);
+                          }}
+                        > Mökkitikka </Button>
+                        <Button
+                          mode="contained"
+                          onPress={() => {
+                            setCompetitionType("Darts 501");
+                            setDialog(false);
+                            setNewCompetitionView(true);
+                          }}
+                        > Darts 501 </Button>
+                      </Dialog.Content>
+
+                    </Dialog>
+                  </Portal>
                 </View>
             }
           </>
