@@ -36,22 +36,26 @@ const Main : React.FC = () : React.ReactElement => {
               : <View
                   style={{ marginTop: 30, marginBottom: 5 }}
                 >
-                  
-                  <ScrollView>
-                    {(competitions.length > 0)
-                      ? competitions.map((competition : Competition) => {
-                          return (
-                            <List.Item
-                              title={competition.name}
-                              description={competition.timestamp}
-                              onPress={() => currentCompetitors(competition.id)}
-                              key={competition.id}
-                            />
-                          )
-                        })
-                      : <Text>No competitions</Text>
-                    }
-                  </ScrollView>
+                  {(competitions.length > 0)
+                    ? <View style={{height : 500}}>
+                        <ScrollView>
+                          {competitions.map((competition : Competition) => {
+                            return (
+                              <List.Item
+                                title={competition.name}
+                                description={competition.timestamp}
+                                onPress={() => currentCompetitors(competition.id)}
+                                key={competition.id}
+                              />
+                            )
+                          })}
+                        </ScrollView>
+                      </View>
+
+                    : <Text
+                        style={{ marginBottom: 5, fontSize: 20 }}
+                      >No competitions</Text>
+                  }
 
                   <Button
                     style={{ marginTop: 5 }}

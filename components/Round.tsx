@@ -68,7 +68,7 @@ const Round : React.FC = () : React.ReactElement => {
 
   useEffect(() => {
 
-    if (round === rounds) {
+    if (resultView) {
       addCompetition();
 
       setNewCompetitionView(false);
